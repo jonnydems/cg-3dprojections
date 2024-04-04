@@ -2,6 +2,49 @@ import { Matrix, Vector } from "./matrix.js";
 
 // create a 4x4 matrix to the perspective projection / view matrix
 function mat4x4Perspective(prp, srp, vup, clip) {
+    let t = mat4x4Translate(mat4x4, -prp[0], -prp[1], -prp[2]);
+    let n = prp.subtract(srp);
+    n.normalize();
+    let u = Matrix.multiply([vup, n]);
+    u.normalize();
+    let v = Matrix.multiply([u, n]);
+
+    let r = new Matrix(4);
+    r.values = [[u[1], u[2], u[3], 0],
+                [v[1], v[2], v[3], 0],
+                [n[1], n[2], n[3], 0],
+                [0, 0, 0, 1] 
+                ];
+    let CW = new Vector(3);
+    CW.values = [(clip[0] - clip[1])/2, (clip[2] - clip[3])/2, -clip[4]];
+    let DOP = CW.subtract(prp);
+    let shxPar = -DOP[0] / DOP[2];
+    let shyPar = -DOP[1] / DOP[2];
+    let shPar = new Matrix(4);
+    shPar.values = [[1, 0, shxPar, 0],
+                    [0, 1, shyPar, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1]];
+    let sPerX = (2* clip[4]) / ((clip[1] - clip[0])*clip[5]);
+    let sPerY = (2* clip[4]) / ((clip[3] - clip[2])*clip[5]);
+    let sPerZ = 1 / clip[5];
+    let sPer = new Matrix(4);
+    sPer.values = [[sPerX, 0, 0, 0],
+                [0, sPerY, 0, 0],
+                [0, 0, sPerZ, 0],
+                [0, 0, 0, 1]];
+    let mPer = new Matrix(4);
+    mPer.values = [[1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, -1, 0]];
+    
+    let nPer = new Matrix(4);
+    nPer = Matrix.multiply([sPer, shPar, r, t]);
+    return nPer;
+
+
+
     // 1. translate PRP to origin
     // 2. rotate VRC such that (u,v,n) align with (x,y,z)
     // 3. shear such that CW is on the z-axis

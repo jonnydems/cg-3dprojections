@@ -61,7 +61,15 @@ class Renderer {
     //
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+            let prp = new Vector(3);
+            prp.values = [3,2,-4];
+            let srp = new Vector(3);
+            srp.values = [1,1,1];
+            let v = prp.subtract(srp);
+            console.log(v);
+            v.normalize();
+            console.log(v);
+     
         // TODO: implement drawing here!
         // For each model
         //   * For each vertex
