@@ -1,7 +1,7 @@
 import { Matrix, Vector } from "./matrix.js";
-
 // create a 4x4 matrix to the perspective projection / view matrix
 function mat4x4Perspective(prp, srp, vup, clip) {
+
     let t = mat4x4Translate(mat4x4, -prp[0], -prp[1], -prp[2]);
     let n = prp.subtract(srp);
     n.normalize();
@@ -16,7 +16,9 @@ function mat4x4Perspective(prp, srp, vup, clip) {
                 [0, 0, 0, 1] 
                 ];
     let CW = new Vector(3);
-    CW.values = [(clip[0] - clip[1])/2, (clip[2] - clip[3])/2, -clip[4]];
+
+    CW.values = [(clip[0] + clip[1])/2, (clip[2] + clip[3])/2, -clip[4]];
+    
     let DOP = CW.subtract(prp);
     let shxPar = -DOP[0] / DOP[2];
     let shyPar = -DOP[1] / DOP[2];
@@ -58,6 +60,10 @@ function mat4x4Perspective(prp, srp, vup, clip) {
 // create a 4x4 matrix to project a perspective image on the z=-1 plane
 function mat4x4MPer() {
     let mper = new Matrix(4, 4);
+    mper.values =   [[1, 0, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, -1, 0]];
     // mper.values = ...;
     return mper;
 }
