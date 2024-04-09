@@ -61,6 +61,26 @@ class Renderer {
     //
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        let prp = this.scene.view.prp
+        let srp = this.scene.view.srp
+        let vup = this.scene.view.vup;
+        let clip = this.scene.view.clip;
+
+        let newVertices = [];
+
+        for (let i = 0; i < this.scene.models.length; i++) {
+
+            // console.log(this.scene.models[i]);
+
+            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
+
+                // TODO TRANSFORM VERTICES
+                console.log(this.scene.models[i].vertices[j]);
+
+            }
+        }
+
         // TODO: implement drawing here!
         // For each model
         //   * For each vertex
@@ -70,7 +90,7 @@ class Renderer {
         //     * project to 2D
         //     * translate/scale to viewport (i.e. window)
         //     * draw line
-        
+
     }
 
     // Get outcode for a vertex
