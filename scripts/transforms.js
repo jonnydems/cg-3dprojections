@@ -45,8 +45,6 @@ function mat4x4Perspective(prp, srp, vup, clip) {
     nPer = Matrix.multiply([sPer, shPar, r, t]);
     return nPer;
 
-
-
     // 1. translate PRP to origin
     // 2. rotate VRC such that (u,v,n) align with (x,y,z)
     // 3. shear such that CW is on the z-axis
@@ -64,14 +62,16 @@ function mat4x4MPer() {
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, -1, 0]];
-    // mper.values = ...;
     return mper;
 }
 
 // create a 4x4 matrix to translate/scale projected vertices to the viewport (window)
 function mat4x4Viewport(width, height) {
     let viewport = new Matrix(4, 4);
-    // viewport.values = ...;
+    viewport.values = [[width/2, 0, 0, width/2],
+                      [0, height/2, 0, height/2],
+                      [0, 0, 1, 0],
+                      [0, 0, 0, 1]];
     return viewport;
 }
 

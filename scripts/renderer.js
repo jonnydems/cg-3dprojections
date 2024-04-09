@@ -70,6 +70,7 @@ class Renderer {
         //     * project to 2D
         //     * translate/scale to viewport (i.e. window)
         //     * draw line
+        
     }
 
     // Get outcode for a vertex
