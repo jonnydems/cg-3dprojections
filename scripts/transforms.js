@@ -141,16 +141,9 @@ function Vector4(x, y, z, w) {
 }
 
 export {
-    mat4x4Perspective,
-    mat4x4MPer,
-    mat4x4Viewport,
-    mat4x4Identity,
-    mat4x4Translate,
-    mat4x4Scale,
-    mat4x4RotateX,
-    mat4x4RotateY,
-    mat4x4RotateZ,
-    mat4x4ShearXY,
     Vector3,
-    Vector4
+    Vector4, mat4x4Identity, mat4x4MPer, mat4x4Perspective, mat4x4RotateX,
+    mat4x4RotateY,
+    mat4x4RotateZ, mat4x4Scale, mat4x4ShearXY, mat4x4Translate, mat4x4Viewport
 };
+
