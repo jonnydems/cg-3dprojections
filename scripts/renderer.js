@@ -62,23 +62,55 @@ class Renderer {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        let prp = this.scene.view.prp
-        let srp = this.scene.view.srp
-        let vup = this.scene.view.vup;
-        let clip = this.scene.view.clip;
 
-        let newVertices = [];
+        let perspMat = CG.mat4x4Perspective(this.scene.view.prp, this.scene.view.srp, this.scene.view.vup, this.scene.view.clip);
+        let mPerMat = CG.mat4x4MPer();
+        let viewportMat = CG.mat4x4Viewport(this.canvas.width, this.canvas.height);
+        
+        console.log(viewportMat);
+  
 
         for (let i = 0; i < this.scene.models.length; i++) {
 
-            // console.log(this.scene.models[i]);
+            let newVertices = [];
 
             for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
 
                 // TODO TRANSFORM VERTICES
-                console.log(this.scene.models[i].vertices[j]);
+
+                let vert = Matrix.multiply([perspMat, this.scene.models[i].vertices[j]]);
+                newVertices.push(vert);
+            }
+            
+
+
+            for (let k=0; k<newVertices.length; k++) {
+
+                let mPerVert = Matrix.multiply([mPerMat, newVertices[k]]);
+                newVertices[k] = mPerVert;
+
+                let viewPortVert = Matrix.multiply([viewportMat, newVertices[k]])
+                newVertices[k] = viewPortVert;
+
+                console.log(newVertices[k]);
+                let w = newVertices[k].w
+                newVertices[k].x = newVertices[k].x / w;
+                newVertices[k].y = newVertices[k].y / w;
+                newVertices[k].z = newVertices[k].z / w;
+
+                for (let l = 0; l < this.scene.models[i].edges.length; l++) {
+
+                    let edges = this.scene.models[i].edges[l];
+
+                    for (let m = 0; m < edges.length - 1; m++) {
+
+                        this.drawLine(newVertices[edges[m]].x, newVertices[edges[m]].y, newVertices[edges[m + 1]].x, newVertices[edges[m + 1]].y);
+
+                    }
+                }
 
             }
+            
         }
 
         // TODO: implement drawing here!
