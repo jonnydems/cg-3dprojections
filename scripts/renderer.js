@@ -1,5 +1,5 @@
+import { Matrix } from "./matrix.js";
 import * as CG from './transforms.js';
-import { Matrix, Vector } from "./matrix.js";
 
 const LEFT =   32; // binary 100000
 const RIGHT =  16; // binary 010000
@@ -25,7 +25,21 @@ class Renderer {
 
     //
     updateTransforms(time, delta_time) {
-        // TODO: update any transformations needed for animation
+        // Check for key presses
+        if (this.keysPressed['w']) {
+            this.moveForward();
+        }
+        if (this.keysPressed['a']) {
+            this.moveLeft();
+        }
+        if (this.keysPressed['s']) {
+            this.moveBackward();
+        }
+        if (this.keysPressed['d']) {
+            this.moveRight();
+        }
+    
+        // TODO: update any other transformations needed for animation
     }
 
     //
@@ -40,22 +54,39 @@ class Renderer {
     
     //
     moveLeft() {
-
+        // Translate PRP and SRP along the u-axis (left)
+        const translationAmount = 0.1; // Adjust as needed
+        this.scene.view.prp[0] -= translationAmount;
+        this.scene.view.srp[0] -= translationAmount;
+        // Redraw scene after translation
+        this.draw();
     }
     
-    //
     moveRight() {
-
+        // Translate PRP and SRP along the u-axis (right)
+        const translationAmount = 0.1; // Adjust as needed
+        this.scene.view.prp[0] += translationAmount;
+        this.scene.view.srp[0] += translationAmount;
+        // Redraw scene after translation
+        this.draw();
     }
     
-    //
     moveBackward() {
-
+        // Translate PRP and SRP along the n-axis (backward)
+        const translationAmount = 0.1; // Adjust as needed
+        this.scene.view.prp[2] += translationAmount;
+        this.scene.view.srp[2] += translationAmount;
+        // Redraw scene after translation
+        this.draw();
     }
     
-    //
     moveForward() {
-
+        // Translate PRP and SRP along the n-axis (forward)
+        const translationAmount = 0.1; // Adjust as needed
+        this.scene.view.prp[2] -= translationAmount;
+        this.scene.view.srp[2] -= translationAmount;
+        // Redraw scene after translation
+        this.draw();
     }
 
     //
@@ -266,3 +297,4 @@ class Renderer {
 };
 
 export { Renderer };
+
