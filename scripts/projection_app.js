@@ -1,4 +1,4 @@
-import { createApp, reactive, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 import { Renderer } from './renderer.js';
 
 let app = createApp({
@@ -60,6 +60,7 @@ let initial_scene = {
     models: [
         {
             type: 'generic',
+            center: [10, 10, -45], // Adding the center here
             vertices: [
                 [ 0.0,  0.0, -30.0],
                 [20.0,  0.0, -30.0],
@@ -84,6 +85,7 @@ let initial_scene = {
         }
     ]
 };
+
 
 document.addEventListener('keydown', app.onKeyDown, false);
     

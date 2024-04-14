@@ -50,6 +50,12 @@ class Renderer {
         if (this.keysPressed['d']) {
             this.moveRight();
         }
+        if (this.keysPressed['ArrowLeft']) {
+            this.rotateLeft();
+        }
+        if (this.keysPressed['ArrowRight']) {
+            this.rotateRight();
+        }
     
         // TODO: update any other transformations needed for animation
     }
@@ -60,17 +66,14 @@ class Renderer {
         const rotationAmount = 0.1; // Adjust as needed
     
         for (let i = 0; i < this.scene.models.length; i++) {
-            // Calculate the center of the model
-            let modelCenter = this.scene.models[i].center;
     
             // Translate to the origin (center)
-            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
-    
+            let translateToOrigin = CG.mat4x4Translate(-this.scene.models[i].center.x, -this.scene.models[i].center.y, -this.scene.models[i].center.z);
             // Rotate around the origin
             let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
     
             // Translate back to the original position
-            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+            let translateBack = CG.mat4x4Translate(this.scene.models[i].center.x, this.scene.models[i].center.y, this.scene.models[i].center.z);
     
             // Combine transformations
             let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
@@ -91,17 +94,15 @@ class Renderer {
         const rotationAmount = -0.1; // Adjust as needed
     
         for (let i = 0; i < this.scene.models.length; i++) {
-            // Calculate the center of the model
-            let modelCenter = this.scene.models[i].center;
     
             // Translate to the origin (center)
-            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
+            let translateToOrigin = CG.mat4x4Translate(-this.scene.models[i].center[x], -this.scene.models[i].center.y, -this.scene.models[i].center.z);
     
             // Rotate around the origin
             let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
     
             // Translate back to the original position
-            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+            let translateBack = CG.mat4x4Translate(this.scene.models[i].center.x, this.scene.models[i].center.y, this.scene.models[i].center.z);
     
             // Combine transformations
             let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
