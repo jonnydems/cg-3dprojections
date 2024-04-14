@@ -56,12 +56,65 @@ class Renderer {
 
     //
     rotateLeft() {
-
+        // Rotate the shape around its center
+        const rotationAmount = 0.1; // Adjust as needed
+    
+        for (let i = 0; i < this.scene.models.length; i++) {
+            // Calculate the center of the model
+            let modelCenter = this.scene.models[i].center;
+    
+            // Translate to the origin (center)
+            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
+    
+            // Rotate around the origin
+            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
+    
+            // Translate back to the original position
+            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+    
+            // Combine transformations
+            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
+    
+            // Apply transformation to each vertex
+            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
+                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
+                this.scene.models[i].vertices[j] = transformedVertex;
+            }
+        }
+    
+        // Redraw scene after rotation
+        this.draw();
     }
     
-    //
     rotateRight() {
-
+        // Rotate the shape around its center
+        const rotationAmount = -0.1; // Adjust as needed
+    
+        for (let i = 0; i < this.scene.models.length; i++) {
+            // Calculate the center of the model
+            let modelCenter = this.scene.models[i].center;
+    
+            // Translate to the origin (center)
+            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
+    
+            // Rotate around the origin
+            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
+    
+            // Translate back to the original position
+            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+    
+            // Combine transformations
+            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
+    
+            // Apply transformation to each vertex
+            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
+                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
+                this.scene.models[i].vertices[j] = transformedVertex;
+            }
+        }
+    
+        // Redraw scene after rotation
+        this.draw();
     }
     
     //
