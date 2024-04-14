@@ -273,16 +273,7 @@ class Renderer {
                 
                 let centery = model1.center[1];
                 let centerz = model1.center[2];
-                // for (let sz of [-1, 1]) {
-                //     for (let sy of [-1, 1]) {
-                //         for (let sx of [-1, 1]) {
-                //             model.vertices.push(CG.Vector4(centerx + sx * halfWidth,
-                //                 centery + sy * halfHeight,
-                //                 centerz + sz * halfDepth,
-                //                 1));
-                //         }
-                //     }
-                // }
+
                 for (let sz = 1; sz >= -1; sz -= 2) {
                     model.vertices.push(CG.Vector4(centerx - halfWidth,
                         centery + halfHeight,
