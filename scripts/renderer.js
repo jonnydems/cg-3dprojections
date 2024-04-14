@@ -56,38 +56,91 @@ class Renderer {
 
     //
     rotateLeft() {
-
+        // Rotate the shape around its center
+        const rotationAmount = 0.1; // Adjust as needed
+    
+        for (let i = 0; i < this.scene.models.length; i++) {
+            // Calculate the center of the model
+            let modelCenter = this.scene.models[i].center;
+    
+            // Translate to the origin (center)
+            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
+    
+            // Rotate around the origin
+            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
+    
+            // Translate back to the original position
+            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+    
+            // Combine transformations
+            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
+    
+            // Apply transformation to each vertex
+            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
+                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
+                this.scene.models[i].vertices[j] = transformedVertex;
+            }
+        }
+    
+        // Redraw scene after rotation
+        this.draw();
     }
     
-    //
     rotateRight() {
-
+        // Rotate the shape around its center
+        const rotationAmount = -0.1; // Adjust as needed
+    
+        for (let i = 0; i < this.scene.models.length; i++) {
+            // Calculate the center of the model
+            let modelCenter = this.scene.models[i].center;
+    
+            // Translate to the origin (center)
+            let translateToOrigin = CG.mat4x4Translate(-modelCenter.x, -modelCenter.y, -modelCenter.z);
+    
+            // Rotate around the origin
+            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
+    
+            // Translate back to the original position
+            let translateBack = CG.mat4x4Translate(modelCenter.x, modelCenter.y, modelCenter.z);
+    
+            // Combine transformations
+            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
+    
+            // Apply transformation to each vertex
+            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
+                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
+                this.scene.models[i].vertices[j] = transformedVertex;
+            }
+        }
+    
+        // Redraw scene after rotation
+        this.draw();
     }
     
     //
     moveLeft() {
         // Translate PRP and SRP along the u-axis (left)
-        const translationAmount = 0.1; // Adjust as needed
-        this.scene.view.prp[0] -= translationAmount;
-        this.scene.view.srp[0] -= translationAmount;
+        const translationAmount = 1; // Adjust as needed
+        this.scene.view.prp.x -= translationAmount;
+        this.scene.view.srp.x -= translationAmount;
         // Redraw scene after translation
         this.draw();
     }
     
     moveRight() {
         // Translate PRP and SRP along the u-axis (right)
-        const translationAmount = 0.1; // Adjust as needed
-        this.scene.view.prp[0] += translationAmount;
-        this.scene.view.srp[0] += translationAmount;
+        const translationAmount = 1; // Adjust as needed
+        this.scene.view.prp.x += translationAmount;
+        this.scene.view.srp.x += translationAmount;
         // Redraw scene after translation
         this.draw();
     }
     
     moveBackward() {
         // Translate PRP and SRP along the n-axis (backward)
-        const translationAmount = 0.1; // Adjust as needed
-        this.scene.view.prp[2] += translationAmount;
-        this.scene.view.srp[2] += translationAmount;
+        const translationAmount = 1; // Adjust as needed
+        this.scene.view.prp.z += translationAmount;
+        this.scene.view.srp.z += translationAmount;
         // Redraw scene after translation
         this.draw();
     }
@@ -95,9 +148,9 @@ class Renderer {
     moveForward() {
         console.log("Moving forward");
         // Translate PRP and SRP along the n-axis (forward)
-        const translationAmount = 0.1; // Adjust as needed
-        this.scene.view.prp[2] -= translationAmount;
-        this.scene.view.srp[2] -= translationAmount;
+        const translationAmount = 1; // Adjust as needed
+        this.scene.view.prp.z -= translationAmount;
+        this.scene.view.srp.z -= translationAmount;
         // Redraw scene after translation
         this.draw();
     }
