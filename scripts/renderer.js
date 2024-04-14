@@ -106,22 +106,32 @@ class Renderer {
     draw() {
         console.log("Drawing scene");
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // TODO: implement drawing here!
     
         let perspMat = CG.mat4x4Perspective(this.scene.view.prp, this.scene.view.srp, this.scene.view.vup, this.scene.view.clip);
         let mPerMat = CG.mat4x4MPer();
         let viewportMat = CG.mat4x4Viewport(this.canvas.width, this.canvas.height);
     
+        // For each model
+
         for (let i = 0; i < this.scene.models.length; i++) {
             let model = this.scene.models[i];
             let newVertices = [];
     
+            //   * For each vertex
+                //     * transform endpoints to canonical view volume
+                //     * project to 2D
+            console.log(model.vertices);
             for (let j = 0; j < model.vertices.length; j++) {
                 let vert = model.vertices[j];
                 let perspVert = Matrix.multiply([perspMat, vert]);
                 let mPerVert = Matrix.multiply([mPerMat, perspVert]);
                 newVertices.push(mPerVert);
             }
-    
+            //   * For each line segment in each edge
+                //     * translate/scale to viewport (i.e. window)
+                //     * draw line
             for (let k = 0; k < model.edges.length; k++) {
                 let edges = model.edges[k];
                 
@@ -137,15 +147,12 @@ class Renderer {
             }
         }
 
-        // TODO: implement drawing here!
-        // For each model
-        //   * For each vertex
-        //     * transform endpoints to canonical view volume
-        //   * For each line segment in each edge
+
+        
+
         //     * clip in 3D
-        //     * project to 2D
-        //     * translate/scale to viewport (i.e. window)
-        //     * draw line
+
+
 
     }
 
@@ -253,6 +260,58 @@ class Renderer {
                     }
                 }
             }
+
+            else if(model.type === 'cube') {
+
+                console.log(scene.models[i]);
+                let model1 = scene.models[i];
+                model.vertices = [];
+                let halfWidth = model1.width / 2;
+                let halfHeight = model1.height / 2;
+                let halfDepth = model1.depth / 2;
+                let centerx = model1.center[0];
+                
+                let centery = model1.center[1];
+                let centerz = model1.center[2];
+                // for (let sz of [-1, 1]) {
+                //     for (let sy of [-1, 1]) {
+                //         for (let sx of [-1, 1]) {
+                //             model.vertices.push(CG.Vector4(centerx + sx * halfWidth,
+                //                 centery + sy * halfHeight,
+                //                 centerz + sz * halfDepth,
+                //                 1));
+                //         }
+                //     }
+                // }
+                for (let sz = 1; sz >= -1; sz -= 2) {
+                    model.vertices.push(CG.Vector4(centerx - halfWidth,
+                        centery + halfHeight,
+                        centerz + sz*halfDepth,
+                        1));
+                    model.vertices.push(CG.Vector4(centerx + halfWidth,
+                        centery + halfHeight,
+                        centerz + sz*halfDepth,
+                        1));
+                    model.vertices.push(CG.Vector4(centerx + halfWidth,
+                        centery - halfHeight,
+                        centerz + sz*halfDepth,
+                        1));
+                    model.vertices.push(CG.Vector4(centerx - halfWidth,
+                        centery - halfHeight,
+                        centerz + sz*halfDepth,
+                        1));
+                }
+                
+
+                model.edges = [];
+                model.edges.push([0, 1, 2, 3, 0]);
+                model.edges.push([4, 5, 6, 7, 4]);
+                model.edges.push([0, 4]);
+                model.edges.push([1, 5]);
+                model.edges.push([2, 6]);
+                model.edges.push([3, 7]);
+            }
+            
             else {
                 model.center = CG.Vector4(scene.models[i].center[0],
                                        scene.models[i].center[1],
