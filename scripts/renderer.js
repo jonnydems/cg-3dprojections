@@ -349,10 +349,48 @@ class Renderer {
                 model.edges = [];
                 model.edges.push([0, 1, 2, 3, 0]);
                 model.edges.push([4, 5, 6, 7, 4]);
+                
                 model.edges.push([0, 4]);
                 model.edges.push([1, 5]);
                 model.edges.push([2, 6]);
                 model.edges.push([3, 7]);
+            }
+            else if (model.type == "cylinder") {
+                let model1 = scene.models[i];
+                model.vertices = [];
+                model.edges = [];
+                let halfHeight = model1.height/2
+                let r = model1.radius
+                let interval = (2 * Math.PI) / model1.sides;
+                for (let sign = 1; sign > -2; sign--) {
+                    for (let i = 0; i < model1.sides; i++) {
+                        halfHeight *= sign;
+                        
+                        model.vertices.push(CG.Vector4(model1.center[0] + r * Math.cos(i*interval),
+                                                       model1.center[1] + halfHeight,
+                                                       model1.center[2] + r * Math.sin(i*interval), 
+                                                       1));
+                    }
+                }
+                //let top = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0];
+                //let bottom =[12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 12];
+                let top = [];
+                let bottom = [];
+                for (let i = 0; i < model1.sides*2; i++) {
+                    if (i > 11) {
+                        bottom.push(i);
+                    }
+                    else {
+                        top.push(i)
+                    }
+                }
+                bottom.push(model1.sides);
+                top.push(0);
+                model.edges.push(top);
+                model.edges.push(bottom);
+                for (let i = 0; i < top.length-1; i++) {
+                    model.edges.push([top[i], bottom[i]]);
+                }
             }
             
             else {
