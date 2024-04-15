@@ -25,12 +25,12 @@ class Renderer {
 
         // Add event listeners for keydown and keyup events
         window.addEventListener('keydown', (event) => {
-            console.log(event.key + " pressed");
+            // console.log(event.key + " pressed");
             this.keysPressed[event.key] = true;
         });
         
         window.addEventListener('keyup', (event) => {
-            console.log(event.key + " released");
+            // console.log(event.key + " released");
             this.keysPressed[event.key] = false;
         });
     }
@@ -64,9 +64,9 @@ class Renderer {
     rotateLeft() {
         // Rotate the shape around its center
         const rotationAmount = 0.1; // Adjust as needed
-    
+        
         for (let i = 0; i < this.scene.models.length; i++) {
-    
+            console.log(this.scene.models[i]);
             // Translate to the origin (center)
             let translateToOrigin = CG.mat4x4Translate(-this.scene.models[i].center.x, -this.scene.models[i].center.y, -this.scene.models[i].center.z);
             // Rotate around the origin
@@ -147,7 +147,7 @@ class Renderer {
     }
     
     moveForward() {
-        console.log("Moving forward");
+        // console.log("Moving forward");
         // Translate PRP and SRP along the n-axis (forward)
         const translationAmount = 1; // Adjust as needed
         this.scene.view.prp.z -= translationAmount;
@@ -158,7 +158,7 @@ class Renderer {
 
     //
     draw() {
-        console.log("Drawing scene");
+        // console.log("Drawing scene");
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // TODO: implement drawing here!
@@ -176,7 +176,6 @@ class Renderer {
             //   * For each vertex
                 //     * transform endpoints to canonical view volume
                 //     * project to 2D
-            console.log(model.vertices);
             for (let j = 0; j < model.vertices.length; j++) {
                 let vert = model.vertices[j];
                 let perspVert = Matrix.multiply([perspMat, vert]);
@@ -317,7 +316,6 @@ class Renderer {
 
             else if(model.type === 'cube') {
 
-                console.log(scene.models[i]);
                 let model1 = scene.models[i];
                 model.vertices = [];
                 let halfWidth = model1.width / 2;
