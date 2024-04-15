@@ -62,57 +62,60 @@ class Renderer {
 
     //
     rotateLeft() {
-        // Rotate the shape around its center
-        const rotationAmount = 0.1; // Adjust as needed
+        const angle = 0.1; // Adjust as needed
+        const cosAngle = Math.cos(angle);
+        const sinAngle = Math.sin(angle);
         
-        for (let i = 0; i < this.scene.models.length; i++) {
-            console.log(this.scene.models[i]);
-            // Translate to the origin (center)
-            let translateToOrigin = CG.mat4x4Translate(-this.scene.models[i].center.x, -this.scene.models[i].center.y, -this.scene.models[i].center.z);
-            // Rotate around the origin
-            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
+        // Translate SRP to origin (subtract PRP)
+        const translatedSRP = [
+            this.scene.view.srp.x - this.scene.view.prp.x,
+            this.scene.view.srp.y - this.scene.view.prp.y,
+            this.scene.view.srp.z - this.scene.view.prp.z
+        ];
     
-            // Translate back to the original position
-            let translateBack = CG.mat4x4Translate(this.scene.models[i].center.x, this.scene.models[i].center.y, this.scene.models[i].center.z);
+        // Rotate SRP around v-axis
+        const newSRP = [
+            translatedSRP[0] * cosAngle - translatedSRP[2] * sinAngle,
+            translatedSRP[1],
+            translatedSRP[0] * sinAngle + translatedSRP[2] * cosAngle
+        ];
     
-            // Combine transformations
-            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
-    
-            // Apply transformation to each vertex
-            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
-                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
-                this.scene.models[i].vertices[j] = transformedVertex;
-            }
-        }
+        // Translate SRP back to original position (add PRP)
+        this.scene.view.srp = [
+            newSRP[0] + this.scene.view.prp[0],
+            newSRP[1] + this.scene.view.prp[1],
+            newSRP[2] + this.scene.view.prp[2]
+        ];
     
         // Redraw scene after rotation
         this.draw();
     }
     
     rotateRight() {
-        // Rotate the shape around its center
-        const rotationAmount = -0.1; // Adjust as needed
+        const angle = -0.1; // Adjust as needed
+        const cosAngle = Math.cos(angle);
+        const sinAngle = Math.sin(angle);
+        
+        // Translate SRP to origin (subtract PRP)
+        const translatedSRP = [
+            this.scene.view.srp.x - this.scene.view.prp.x,
+            this.scene.view.srp.y - this.scene.view.prp.y,
+            this.scene.view.srp.z - this.scene.view.prp.z
+        ];
     
-        for (let i = 0; i < this.scene.models.length; i++) {
+        // Rotate SRP around v-axis
+        const newSRP = [
+            translatedSRP[0] * cosAngle - translatedSRP[2] * sinAngle,
+            translatedSRP[1],
+            translatedSRP[0] * sinAngle + translatedSRP[2] * cosAngle
+        ];
     
-            // Translate to the origin (center)
-            let translateToOrigin = CG.mat4x4Translate(-this.scene.models[i].center[x], -this.scene.models[i].center.y, -this.scene.models[i].center.z);
-    
-            // Rotate around the origin
-            let rotateAroundOrigin = CG.mat4x4RotateY(rotationAmount);
-    
-            // Translate back to the original position
-            let translateBack = CG.mat4x4Translate(this.scene.models[i].center.x, this.scene.models[i].center.y, this.scene.models[i].center.z);
-    
-            // Combine transformations
-            let transformMatrix = Matrix.multiply([translateBack, rotateAroundOrigin, translateToOrigin]);
-    
-            // Apply transformation to each vertex
-            for (let j = 0; j < this.scene.models[i].vertices.length; j++) {
-                let transformedVertex = Matrix.multiply([transformMatrix, this.scene.models[i].vertices[j]]);
-                this.scene.models[i].vertices[j] = transformedVertex;
-            }
-        }
+        // Translate SRP back to original position (add PRP)
+        this.scene.view.srp = [
+            newSRP[0] + this.scene.view.prp[0],
+            newSRP[1] + this.scene.view.prp[1],
+            newSRP[2] + this.scene.view.prp[2]
+        ];
     
         // Redraw scene after rotation
         this.draw();
