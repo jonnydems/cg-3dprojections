@@ -141,6 +141,7 @@ class Renderer {
     }
     
     moveBackward() {
+        console.log(this.scene.view.prp);
         // Translate PRP and SRP along the n-axis (backward)
         const translationAmount = 1; // Adjust as needed
         this.scene.view.prp.z += translationAmount;
@@ -363,15 +364,15 @@ class Renderer {
                 model.vertices = [];
                 model.edges = [];
                 let halfHeight = model1.height/2
-                let r = model1.radius
+                let radius = model1.radius
                 let interval = (2 * Math.PI) / model1.sides;
                 for (let sign = 1; sign > -2; sign--) {
                     for (let i = 0; i < model1.sides; i++) {
                         halfHeight *= sign;
                         
-                        model.vertices.push(CG.Vector4(model1.center[0] + r * Math.cos(i*interval),
+                        model.vertices.push(CG.Vector4(model1.center[0] + radius * Math.cos(i*interval),
                                                        model1.center[1] + halfHeight,
-                                                       model1.center[2] + r * Math.sin(i*interval), 
+                                                       model1.center[2] + radius * Math.sin(i*interval), 
                                                        1));
                     }
                 }
@@ -395,7 +396,61 @@ class Renderer {
                     model.edges.push([top[i], bottom[i]]);
                 }
             }
+
+            else if (model.type === "sphere") {
+                let model1 = scene.models[i];
+                model.vertices = [];
+                model.edges = [];
+                let radius = model1.radius;
+
+                for (let i = 0; i <= model1.stacks; i++) {
+                    let angle1 = Math.PI * i / model1.stacks;
+                    let r = radius * Math.sin(angle1);
+
+                    for (let j = 0; j <= model1.slices; j++) {
+                        let angle2 = 2 * Math.PI * j / model1.slices;
+
+                        model.vertices.push(CG.Vector4(model1.center[0] + r * Math.cos(angle2),
+                                                       model1.center[1] + radius * Math.cos(angle1),
+                                                       model1.center[2] + r * Math.sin(angle2), 1));
+
+                            if (i!=model1.stacks && j!=model1.slices) {
+                                model.edges.push([i * (model1.slices + 1) + j, i * (model1.slices + 1) + j + 1]);
+                                model.edges.push([i * (model1.slices + 1) + j, i * (model1.slices + 1) + j + model1.slices + 1]);
+                            }
+                        
+                    }
+                }
+                console.log(model.edges);
+            }
+            else if (model.type === "cone") {
+                let model1 = scene.models[i];
+                model.vertices = [];
+                model.edges = [];
+                let radius = model1.radius;
+                let halfHeight = model1.height /2;
+                let interval = (2 * Math.PI) / model1.sides;
+
+                for (let i = 0; i < model1.sides; i++) {
+                    model.vertices.push(CG.Vector4(model1.center[0] + radius * Math.cos(i * interval),
+                                                   model1.center[1], model1.center[2] + radius * Math.sin(i * interval),
+                                                   1));
+                }
+
+                model.vertices.push(CG.Vector4(model1.center[0], model1.center[1] + halfHeight, model1.center[2], 1));
+
+                for (let i = 0; i < model1.sides; i++) {
+                    model.edges.push([i, model1.sides]);
+                }
             
+                for (let i = 0; i < model1.sides - 1; i++) {
+                    model.edges.push([i, i + 1]);
+                }
+                model.edges.push([model1.sides - 1, 0]);
+                
+                model.edges.push([model1.sides, 1]);
+            }
+
             else {
                 model.center = CG.Vector4(scene.models[i].center[0],
                                        scene.models[i].center[1],

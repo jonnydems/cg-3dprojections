@@ -1,0 +1,24 @@
+{
+    "view": {
+      "prp": [-75, 0, 40],
+      "srp": [0, 0, 0],
+      "vup": [0, 1, 0],
+      "clip": [-4, 20, -1, 17, 5, 75]
+    },
+    "models": [
+      {
+        "type": "sphere",
+        "center": [0, 0, 0],
+        "radius": 5,
+        "slices": 7,
+        "stacks": 7
+      },
+      {
+        "type": "cone",
+        "center": [-20, 20, 10],
+        "radius": 10,
+        "height": 20,
+        "sides": 10
+    }
+    ]
+  }
