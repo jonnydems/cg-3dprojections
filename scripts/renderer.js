@@ -1,5 +1,6 @@
-import { Matrix } from "./matrix.js";
+import { Matrix, Vector } from "./matrix.js";
 import * as CG from './transforms.js';
+
 
 const LEFT =   32; // binary 100000
 const RIGHT =  16; // binary 010000
@@ -67,24 +68,21 @@ class Renderer {
         const sinAngle = Math.sin(angle);
         
         // Translate SRP to origin (subtract PRP)
-        const translatedSRP = [
-            this.scene.view.srp.x - this.scene.view.prp.x,
-            this.scene.view.srp.y - this.scene.view.prp.y,
-            this.scene.view.srp.z - this.scene.view.prp.z
-        ];
-    
+        let translatedSRP = this.scene.view.srp.subtract(this.scene.view.prp);
+
         // Rotate SRP around v-axis
-        const newSRP = [
-            translatedSRP[0] * cosAngle - translatedSRP[2] * sinAngle,
-            translatedSRP[1],
-            translatedSRP[0] * sinAngle + translatedSRP[2] * cosAngle
+        let newSRP = new Vector(3)
+        newSRP.values = [
+            translatedSRP.x * cosAngle - translatedSRP.z * sinAngle,
+            translatedSRP.y,
+            translatedSRP.z * sinAngle + translatedSRP.z * cosAngle
         ];
     
         // Translate SRP back to original position (add PRP)
-        this.scene.view.srp = [
-            newSRP[0] + this.scene.view.prp[0],
-            newSRP[1] + this.scene.view.prp[1],
-            newSRP[2] + this.scene.view.prp[2]
+        this.scene.view.srp.values = [
+            newSRP.x + this.scene.view.prp.x,
+            newSRP.y + this.scene.view.prp.y,
+            newSRP.z + this.scene.view.prp.z
         ];
     
         // Redraw scene after rotation
@@ -97,24 +95,21 @@ class Renderer {
         const sinAngle = Math.sin(angle);
         
         // Translate SRP to origin (subtract PRP)
-        const translatedSRP = [
-            this.scene.view.srp.x - this.scene.view.prp.x,
-            this.scene.view.srp.y - this.scene.view.prp.y,
-            this.scene.view.srp.z - this.scene.view.prp.z
-        ];
-    
+        let translatedSRP = this.scene.view.srp.subtract(this.scene.view.prp);
+
         // Rotate SRP around v-axis
-        const newSRP = [
-            translatedSRP[0] * cosAngle - translatedSRP[2] * sinAngle,
-            translatedSRP[1],
-            translatedSRP[0] * sinAngle + translatedSRP[2] * cosAngle
+        let newSRP = new Vector(3)
+        newSRP.values = [
+            translatedSRP.x * cosAngle - translatedSRP.z * sinAngle,
+            translatedSRP.y,
+            translatedSRP.z * sinAngle + translatedSRP.z * cosAngle
         ];
     
         // Translate SRP back to original position (add PRP)
-        this.scene.view.srp = [
-            newSRP[0] + this.scene.view.prp[0],
-            newSRP[1] + this.scene.view.prp[1],
-            newSRP[2] + this.scene.view.prp[2]
+        this.scene.view.srp.values = [
+            newSRP.x + this.scene.view.prp.x,
+            newSRP.y + this.scene.view.prp.y,
+            newSRP.z + this.scene.view.prp.z
         ];
     
         // Redraw scene after rotation
