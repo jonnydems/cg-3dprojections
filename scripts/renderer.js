@@ -204,9 +204,6 @@ class Renderer {
             }
         }
 
-
-        
-
         //     * clip in 3D
 
 
@@ -250,8 +247,8 @@ class Renderer {
         let out0 = this.outcodePerspective(p0, z_min);
         let out1 = this.outcodePerspective(p1, z_min);
         
-        // TODO: implement clipping here!
         
+        //TODO: implement clipping here!
         return result;
     }
 
