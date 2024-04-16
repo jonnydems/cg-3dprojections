@@ -75,7 +75,7 @@ class Renderer {
         newSRP.values = [
             translatedSRP.x * cosAngle - translatedSRP.z * sinAngle,
             translatedSRP.y,
-            translatedSRP.z * sinAngle + translatedSRP.z * cosAngle
+            translatedSRP.x * sinAngle + translatedSRP.z * cosAngle
         ];
     
         // Translate SRP back to original position (add PRP)
@@ -102,7 +102,7 @@ class Renderer {
         newSRP.values = [
             translatedSRP.x * cosAngle - translatedSRP.z * sinAngle,
             translatedSRP.y,
-            translatedSRP.z * sinAngle + translatedSRP.z * cosAngle
+            translatedSRP.x * sinAngle + translatedSRP.z * cosAngle
         ];
     
         // Translate SRP back to original position (add PRP)
