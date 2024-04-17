@@ -1,6 +1,6 @@
 {
     "view": {
-      "prp": [-75, 0, 40],
+      "prp": [0, 0, 10],
       "srp": [10, 0, 0],
       "vup": [0, 1, 0],
       "clip": [-4, 20, -1, 17, 5, 75]
@@ -8,17 +8,17 @@
     "models": [
       {
         "type": "sphere",
-        "center": [0, 0, 0],
-        "radius": 5,
-        "slices": 7,
-        "stacks": 7
+        "center": [4, 4, -10],
+        "radius": 20,
+        "slices": 10,
+        "stacks": 10
       },
       {
         "type": "cone",
         "center": [-20, 20, 10],
         "radius": 10,
-        "height": 20,
-        "sides": 10
+        "height": 40,
+        "sides": 100
     }
     ]
   }

@@ -157,7 +157,7 @@ class Renderer {
 
     //
     draw() {
-        // console.log("Drawing scene");
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // TODO: implement drawing here!
@@ -174,13 +174,18 @@ class Renderer {
     
             //   * For each vertex
                 //     * transform endpoints to canonical view volume
-                //     * project to 2D
+                
+
             for (let j = 0; j < model.vertices.length; j++) {
                 let vert = model.vertices[j];
                 let perspVert = Matrix.multiply([perspMat, vert]);
-                let mPerVert = Matrix.multiply([mPerMat, perspVert]);
-                newVertices.push(mPerVert);
+                newVertices.push(perspVert);
             }
+
+
+
+            //     * project to 2D
+ 
             //   * For each line segment in each edge
                 //     * translate/scale to viewport (i.e. window)
                 //     * draw line
@@ -190,11 +195,17 @@ class Renderer {
                 for (let l = 0; l < edges.length - 1; l++) {
                     let vertex1 = newVertices[edges[l]];
                     let vertex2 = newVertices[edges[l + 1]];
-                    
-                    let viewPortVert1 = Matrix.multiply([viewportMat, vertex1]);
-                    let viewPortVert2 = Matrix.multiply([viewportMat, vertex2]);
-                    
-                    this.drawLine(viewPortVert1.x / viewPortVert1.w, viewPortVert1.y / viewPortVert1.w, viewPortVert2.x / viewPortVert2.w, viewPortVert2.y / viewPortVert2.w);
+                    let line = {pt0: vertex1, pt1: vertex2}
+
+                    let newLine = this.clipLinePerspective(line, -this.scene.view.clip[4] / this.scene.view.clip[5]);
+                    if (newLine) {
+                        vertex1 = newLine.pt0;
+                        vertex2 = newLine.pt1;
+                        let viewPortVert1 = Matrix.multiply([viewportMat, mPerMat, vertex1]);
+                        let viewPortVert2 = Matrix.multiply([viewportMat, mPerMat, vertex2]);
+                        
+                        this.drawLine(viewPortVert1.x / viewPortVert1.w, viewPortVert1.y / viewPortVert1.w, viewPortVert2.x / viewPortVert2.w, viewPortVert2.y / viewPortVert2.w);
+                    }
                 }
             }
         }
@@ -235,17 +246,92 @@ class Renderer {
     //             or null (if line is completely outside view volume)
     // line:         object {pt0: Vector4, pt1: Vector4}
     // z_min:        float (near clipping plane in canonical view volume)
+    newPoint(fP, sP, t) {
+        let newX = fP.x + t * (sP.x - fP.x);
+        let newY = fP.y + t * (sP.y - fP.y);
+        let newZ = fP.z + t * (sP.z - fP.z);
+        let newPoint = CG.Vector3(newX, newY, newZ);
+        return newPoint;
+    }
+
     clipLinePerspective(line, z_min) {
         let result = null;
-        let p0 = Vector3(line.pt0.x, line.pt0.y, line.pt0.z); 
-        let p1 = Vector3(line.pt1.x, line.pt1.y, line.pt1.z);
+        let p0 = CG.Vector3(line.pt0.x, line.pt0.y, line.pt0.z); 
+        let p1 = CG.Vector3(line.pt1.x, line.pt1.y, line.pt1.z);
         let out0 = this.outcodePerspective(p0, z_min);
         let out1 = this.outcodePerspective(p1, z_min);
-        
-        
+        let t;
+
+        while(true) {
+
+            if ((out0 | out1) == 0) {
+                result = {pt0: CG.Vector4(p0.x, p0.y, p0.z, 1), pt1: CG.Vector4(p1.x, p1.y, p1.z, 1)};
+                break;
+
+            } else if ((out0 & out1) != 0) {
+                break;
+
+            } else if (out0 & LEFT) {
+                t = (-p0.x + p0.z) / ((p1.x - p0.x) - (p1.z - p0.z))
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } else if (out0 & RIGHT) {
+                t = (p0.x + p0.z) / (-(p1.x - p0.x) - (p1.z - p0.z))
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } else if (out0 & BOTTOM) {
+                t = (-p0.y + p0.z) / ((p1.y - p0.y) - (p1.z - p0.z))
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } else if (out0 & TOP) {
+                t = (p0.y + p0.z) / (-(p1.y - p0.y) - (p1.z - p0.z))
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } else if (out0 & NEAR) {
+                t = (p0.z - z_min) / -(p1.z - p0.z)
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } else if (out0 & FAR) {
+                t = (-p0.z - 1) / (p1.z - p0.z)
+                p0 = this.newPoint(p0, p1, t);
+                out0 = this.outcodePerspective(p0, z_min);
+            } 
+
+
+            else if (out1 & LEFT) {
+                t = (-p1.x + p1.z) / ((p0.x - p1.x) - (p0.z - p1.z))
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            } else if (out1 & RIGHT) {
+                t = (p1.x + p1.z) / (-(p0.x - p1.x) - (p0.z - p1.z))
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            } else if (out1 & BOTTOM) {
+                t = (-p1.y + p1.z) / ((p0.y - p1.y) - (p0.z - p1.z))
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            } else if (out1 & TOP) {
+                t = (p1.y + p1.z) / (-(p0.y - p1.y) - (p0.z - p1.z))
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            } else if (out1 & NEAR) {
+                t = (p1.z - z_min) / -(p0.z - p1.z)
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            } else if (out1 & FAR) {
+                t = (-p1.z - 1) / (p0.z - p1.z)
+                p1 = this.newPoint(p1, p0, t);
+                out1 = this.outcodePerspective(p1, z_min)
+            }
+
+        }
+
+
         //TODO: implement clipping here!
         return result;
-    }
+
+        }
+    
 
     //
     animate(timestamp) {
@@ -413,7 +499,6 @@ class Renderer {
                         
                     }
                 }
-                console.log(model.edges);
             }
             else if (model.type === "cone") {
                 let model1 = scene.models[i];
