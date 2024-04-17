@@ -11,14 +11,22 @@
         "center": [0, 0, 0],
         "radius": 5,
         "slices": 7,
-        "stacks": 7
+        "stacks": 7,
+        "animation": {
+          "axis": "z",
+          "rps": 0.5
+      }
       },
       {
         "type": "cone",
         "center": [-20, 20, 10],
         "radius": 10,
         "height": 20,
-        "sides": 10
+        "sides": 10,
+        "animation": {
+          "axis": "x",
+          "rps": 0.5
+      }
     }
     ]
   }

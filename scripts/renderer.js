@@ -19,7 +19,7 @@ class Renderer {
         this.canvas.height = canvas.height;
         this.ctx = this.canvas.getContext('2d');
         this.scene = this.processScene(scene);
-        this.enable_animation = false;  // <-- disabled for easier debugging; enable for animation
+        this.enable_animation = true;  // <-- disabled for easier debugging; enable for animation
         this.start_time = null;
         this.prev_time = null;
         this.keysPressed = {};
@@ -35,7 +35,22 @@ class Renderer {
             this.keysPressed[event.key] = false;
         });
     }
-
+    mat4x4Rotation(axis, angle) {
+        let [x, y, z] = axis;
+        let c = Math.cos(angle);
+        let s = Math.sin(angle);
+        let t = 1 - c;
+    
+        let rotationMatrix = new Matrix(4, 4);
+        rotationMatrix.values = [
+            [t*x*x + c,     t*x*y - z*s,  t*x*z + y*s,  0],
+            [t*x*y + z*s,   t*y*y + c,    t*y*z - x*s,  0],
+            [t*x*z - y*s,   t*y*z + x*s,  t*z*z + c,    0],
+            [0,             0,            0,            1]
+        ];
+    
+        return rotationMatrix;
+    }
     //
     updateTransforms(time, delta_time) {
         // Check for key presses
@@ -57,7 +72,43 @@ class Renderer {
         if (this.keysPressed['ArrowRight']) {
             this.rotateRight();
         }
+        for (let i = 0; i < this.scene.models.length; i++) {
+            let model = this.scene.models[i];
+            if (model.animation) {
+                let rotationAxis = null;
+                if (model.animation.axis === 'x') {
+                    rotationAxis = new Vector(3)
+                    rotationAxis.values = [1, 0, 0];
+                } else if (model.animation.axis === 'y') {
+                    rotationAxis = new Vector(3)
+                    rotationAxis.values = [0, 1, 0];
+                } else if (model.animation.axis === 'z') {
+                    rotationAxis = new Vector(3)
+                    rotationAxis.values = [0, 0, 1];
+                }
+                if (rotationAxis) {
+                    // Calculate rotation angle based on revolutions per second
+                    let rotationSpeed = model.animation.rps * 2 * Math.PI; // Convert revolutions per second to radians per second
+                    let rotationAngle = rotationSpeed * delta_time / 1000; // Convert milliseconds to seconds
+                    let rotationMatrix = new matrix()
+                    if (model.animation.axis === 'x') {
+                        rotationMatrix = CG.mat4x4RotationX(rotationAxis, rotationAngle);
+                    }
+                    if (model.animation.axis === 'y') {
+                        rotationMatrix = CG.mat4x4RotationY(rotationAxis, rotationAngle);
+                    }
+                    if (model.animation.axis === 'z') {
+                        rotationMatrix = CG.mat4x4RotationZ(rotationAxis, rotationAngle);
+                    }
+                    // Translate model to its center, rotate, and translate back
+                    let translationToCenter = CG.mat4x4Translate(new Matrix(4, 4), -model.center.x, -model.center.y, -model.center.z);
+                    let translationBack = CG.mat4x4Translate(new Matrix(4, 4), model.center.x, model.center.y, model.center.z);
     
+                    // Apply transformations
+                    model.matrix = Matrix.multiply([translationBack, rotationMatrix, translationToCenter, model.matrix]);
+                }
+            }
+        }
         // TODO: update any other transformations needed for animation
     }
 
