@@ -114,7 +114,7 @@ class Renderer {
 
     //
     rotateLeft() {
-        const angle = 0.1; // Adjust as needed
+        const angle = 0.02; // Adjust as needed
         const cosAngle = Math.cos(angle);
         const sinAngle = Math.sin(angle);
         
@@ -141,7 +141,7 @@ class Renderer {
     }
     
     rotateRight() {
-        const angle = -0.1; // Adjust as needed
+        const angle = -0.02; // Adjust as needed
         const cosAngle = Math.cos(angle);
         const sinAngle = Math.sin(angle);
         
@@ -170,7 +170,7 @@ class Renderer {
     //
     moveLeft() {
         // Translate PRP and SRP along the u-axis (left)
-        const translationAmount = 1; // Adjust as needed
+        const translationAmount = 0.5; // Adjust as needed
         this.scene.view.prp.x -= translationAmount;
         this.scene.view.srp.x -= translationAmount;
         // Redraw scene after translation
@@ -179,7 +179,7 @@ class Renderer {
     
     moveRight() {
         // Translate PRP and SRP along the u-axis (right)
-        const translationAmount = 1; // Adjust as needed
+        const translationAmount = 0.5; // Adjust as needed
         this.scene.view.prp.x += translationAmount;
         this.scene.view.srp.x += translationAmount;
         // Redraw scene after translation
@@ -189,7 +189,7 @@ class Renderer {
     moveBackward() {
         console.log(this.scene.view.prp);
         // Translate PRP and SRP along the n-axis (backward)
-        const translationAmount = 1; // Adjust as needed
+        const translationAmount = 0.5; // Adjust as needed
         this.scene.view.prp.z += translationAmount;
         this.scene.view.srp.z += translationAmount;
         // Redraw scene after translation
@@ -199,7 +199,7 @@ class Renderer {
     moveForward() {
         // console.log("Moving forward");
         // Translate PRP and SRP along the n-axis (forward)
-        const translationAmount = 1; // Adjust as needed
+        const translationAmount = 0.5; // Adjust as needed
         this.scene.view.prp.z -= translationAmount;
         this.scene.view.srp.z -= translationAmount;
         // Redraw scene after translation

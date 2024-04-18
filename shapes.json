@@ -8,10 +8,10 @@
     "models": [
       {
         "type": "sphere",
-        "center": [0, 0, 0],
-        "radius": 5,
-        "slices": 7,
-        "stacks": 7,
+        "center": [0, 0, 10],
+        "radius": 15,
+        "slices": 10,
+        "stacks": 10,
         "animation": {
           "axis": "z",
           "rps": 0.5
