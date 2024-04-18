@@ -510,7 +510,7 @@ class Renderer {
                 let top = [];
                 let bottom = [];
                 for (let i = 0; i < model1.sides*2; i++) {
-                    if (i > 11) {
+                    if (i > model1.sides-1) {
                         bottom.push(i);
                     }
                     else {

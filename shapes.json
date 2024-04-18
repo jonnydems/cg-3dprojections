@@ -22,11 +22,29 @@
         "center": [-20, 20, 10],
         "radius": 10,
         "height": 20,
-        "sides": 10,
+        "sides": 50,
         "animation": {
           "axis": "x",
           "rps": 0.5
       }
+      },
+      {
+        "type": "cube",
+        "center": [30, 30, 10],
+        "width": 15,
+        "height": 10,
+        "depth": 20
+    },
+    {
+        "type": "cylinder",
+        "center": [50, 50, 15],
+        "radius": 5,
+        "height": 20,
+        "sides": 50,
+        "animation": {
+            "axis": "y",
+            "rps": 0.5
+        }
     }
     ]
   }
